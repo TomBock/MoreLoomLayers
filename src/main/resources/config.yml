@@ -1,6 +1,88 @@
 patterns:
-  base: 0
-  other: 1
-
+  minecraft:base: 0
+  minecraft:border: 1
+  minecraft:bricks: 2
+  minecraft:circle: 3
+  minecraft:creeper: 4
+  minecraft:cross: 5
+  minecraft:curly_border: 6
+  minecraft:diagonal_left: 7
+  minecraft:diagonal_right: 8
+  minecraft:diagonal_up_left: 9
+  minecraft:diagonal_up_right: 10
+  minecraft:flow: 11
+  minecraft:flower: 12
+  minecraft:globe: 13
+  minecraft:gradient: 14
+  minecraft:gradient_up: 15
+  minecraft:guster: 16
+  minecraft:half_horizontal: 17
+  minecraft:half_horizontal_bottom: 18
+  minecraft:half_vertical: 19
+  minecraft:half_vertical_right: 20
+  minecraft:mojang: 21
+  minecraft:piglin: 22
+  minecraft:rhombus: 23
+  minecraft:skull: 24
+  minecraft:small_stripes: 25
+  minecraft:square_bottom_left: 26
+  minecraft:square_bottom_right: 27
+  minecraft:square_top_left: 28
+  minecraft:square_top_right: 29
+  minecraft:straight_cross: 30
+  minecraft:stripe_bottom: 31
+  minecraft:stripe_center: 32
+  minecraft:stripe_downleft: 33
+  minecraft:stripe_downright: 34
+  minecraft:stripe_left: 35
+  minecraft:stripe_middle: 36
+  minecraft:stripe_right: 37
+  minecraft:stripe_top: 38
+  minecraft:triangle_bottom: 39
+  minecraft:triangle_top: 40
+  minecraft:triangles_bottom: 41
+  minecraft:triangles_top: 42
 names:
-  base: "Basis"
+  minecraft:base: Base
+  minecraft:border: Bordure
+  minecraft:bricks: Field Masoned
+  minecraft:circle: Roundel
+  minecraft:creeper: Creeper Charge
+  minecraft:cross: Saltire
+  minecraft:curly_border: Bordure Indented
+  minecraft:diagonal_left: Per Bend Inverted
+  minecraft:diagonal_right: Per Bend Sinister Inverted
+  minecraft:diagonal_up_left: Per Bend Sinister
+  minecraft:diagonal_up_right: Per Bend
+  minecraft:flow: minecraft:flow
+  minecraft:flower: Flower Charge
+  minecraft:globe: Globe
+  minecraft:gradient: Gradient
+  minecraft:gradient_up: Base Gradient
+  minecraft:guster: Guster
+  minecraft:half_horizontal: Per Fess
+  minecraft:half_horizontal_bottom: Per Fess Inverted
+  minecraft:half_vertical: Per Pale
+  minecraft:half_vertical_right: Per Pale Inverted
+  minecraft:mojang: Thing
+  minecraft:piglin: Snout
+  minecraft:rhombus: Lozenge
+  minecraft:skull: Skull Charge
+  minecraft:small_stripes: Paly
+  minecraft:square_bottom_left: Base Dexter Canton
+  minecraft:square_bottom_right: Base Sinister Canton
+  minecraft:square_top_left: Chief Dexter Canton
+  minecraft:square_top_right: Chief Sinister Canton
+  minecraft:straight_cross: Cross
+  minecraft:stripe_bottom: Base
+  minecraft:stripe_center: Pale
+  minecraft:stripe_downleft: Bend Sinister
+  minecraft:stripe_downright: Bend
+  minecraft:stripe_left: Pale Dexter
+  minecraft:stripe_middle: Fess
+  minecraft:stripe_right: Pale Sinister
+  minecraft:stripe_top: Chief
+  minecraft:triangle_bottom: Chevron
+  minecraft:triangle_top: Inverted Chevron
+  minecraft:triangles_bottom: Base Indented
+  minecraft:triangles_top: Chief Indented
