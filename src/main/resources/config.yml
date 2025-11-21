@@ -1,0 +1,6 @@
+patterns:
+  base: 0
+  other: 1
+
+names:
+  base: "Basis"

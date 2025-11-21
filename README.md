@@ -1,3 +1,12 @@
+## Fork
+
+This is a fork of [bearofbusiness/MoreLoomLayers](https://github.com/bearofbusiness/MoreLoomLayers).
+
+Changes in this fork:
+- Updated to Minecraft/Paper 1.21.x
+- Updated Java version to 21
+- Added config.yml for persistent ordinals
+
 # MoreLoomLayers  
 
 This plugin allows you to have up to 16 pattern layers on a banner. Works normally using the loom.

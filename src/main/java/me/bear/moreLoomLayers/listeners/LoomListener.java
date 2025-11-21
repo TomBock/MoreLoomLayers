@@ -1,21 +1,20 @@
 package me.bear.moreLoomLayers.listeners;
 
 import me.bear.moreLoomLayers.MoreLoomLayers;
+import me.bear.moreLoomLayers.config.PersistentPatternConfig;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
+import net.kyori.adventure.text.TranslatableComponent;
+import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -220,7 +219,8 @@ public class LoomListener implements Listener {
             // DyeColor ordinal fits in a byte since there aren't many DyeColors:
             byte colorOrdinal = (byte)p.getColor().ordinal();
             // PatternType can be stored as a short since pattern types are enumerations with small ordinals.
-            short patternOrdinal = (short)p.getPattern().ordinal();
+            // We use our sorted list to get consistent ordinals
+            short patternOrdinal = PersistentPatternConfig.getOrdinal(p.getPattern());
 
             data[index++] = colorOrdinal;
             data[index++] = (byte)(0);
@@ -242,7 +242,7 @@ public class LoomListener implements Listener {
             short patternOrdinal = (short)(((data[index++] & 0xFF) << 8) | (data[index++] & 0xFF));
 
             DyeColor color = DyeColor.values()[colorOrdinal];
-            PatternType patternType = PatternType.values()[patternOrdinal];
+            PatternType patternType = PersistentPatternConfig.getPatternByOrdinal(patternOrdinal);
             patterns.add(new Pattern(color, patternType));
         }
         return patterns;
@@ -258,49 +258,7 @@ public class LoomListener implements Listener {
         return sb.toString().trim();
     }
     private static String getPatternRealName(PatternType type) {
-        return switch (type) {
-            case SQUARE_BOTTOM_LEFT -> "Base Dexter Canton"; // Bottom Left Corner
-            case SQUARE_BOTTOM_RIGHT -> "Base Sinister Canton"; // Bottom Right Corner
-            case SQUARE_TOP_LEFT -> "Chief Dexter Canton"; // Top Left Corner
-            case SQUARE_TOP_RIGHT -> "Chief Sinister Canton"; // Top Right Corner
-            case BASE -> "Base"; // Bottom Stripe
-            case STRIPE_TOP -> "Chief"; // Top Stripe
-            case STRIPE_LEFT -> "Pale Dexter"; // Left Stripe
-            case STRIPE_RIGHT -> "Pale Sinister"; // Right Stripe
-            case STRIPE_CENTER -> "Pale"; // Vertical Center Stripe
-            case STRIPE_MIDDLE -> "Fess"; // Horizontal Middle Stripe
-            case STRIPE_DOWNRIGHT -> "Bend"; // Down Right Stripe
-            case STRIPE_DOWNLEFT -> "Bend Sinister"; // Down Left Stripe
-            case STRIPE_SMALL -> "Paly"; // Vertical Small Stripes
-            case CROSS -> "Saltire"; // Diagonal Cross
-            case STRAIGHT_CROSS -> "Cross"; // Square Cross
-            case TRIANGLE_BOTTOM -> "Chevron"; // Bottom Triangle
-            case TRIANGLE_TOP -> "Inverted Chevron"; // Top Triangle
-            case TRIANGLES_BOTTOM -> "Base Indented"; // Bottom Triangle Sawtooth
-            case TRIANGLES_TOP -> "Chief Indented"; // Top Triangle Sawtooth
-            case DIAGONAL_LEFT_MIRROR -> "Per Bend Sinister"; // Left of Diagonal
-            case DIAGONAL_RIGHT -> "Per Bend Sinister Inverted"; // Right of Diagonal
-            case DIAGONAL_LEFT -> "Per Bend Inverted"; // Left of upside-down Diagonal
-            case DIAGONAL_RIGHT_MIRROR -> "Per Bend"; // Right of upside-down Diagonal
-            case CIRCLE_MIDDLE -> "Roundel"; // Middle Circle
-            case RHOMBUS_MIDDLE -> "Lozenge"; // Middle Rhombus
-            case HALF_VERTICAL -> "Per Pale"; // Left Vertical Half
-            case HALF_HORIZONTAL -> "Per Fess"; // Top Horizontal Half
-            case HALF_VERTICAL_MIRROR -> "Per Pale Inverted"; // Right Vertical Half
-            case HALF_HORIZONTAL_MIRROR -> "Per Fess Inverted"; // Bottom Horizontal Half
-            case BORDER -> "Bordure"; // Border
-            case CURLY_BORDER -> "Bordure Indented"; // Curly Border
-            case GRADIENT -> "Gradient"; // Gradient
-            case GRADIENT_UP -> "Base Gradient"; // Gradient upside-down
-            case BRICKS -> "Field Masoned"; // Brick
-            case SKULL -> "Skull Charge"; // Skull
-            case CREEPER -> "Creeper Charge"; // Creeper
-            case FLOWER -> "Flower Charge"; // Flower
-            case MOJANG -> "Thing"; // Mojang
-            case GLOBE -> "Globe"; // Globe
-            case PIGLIN -> "Snout"; // Piglin
-            default -> "Unknown Pattern";
-        };
-
+        // uses config based names so that you can customize them if needed
+        return PersistentPatternConfig.getName(type);
     }
 }
