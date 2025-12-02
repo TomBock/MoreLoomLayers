@@ -6,6 +6,7 @@ Changes in this fork:
 - Updated to Minecraft/Paper 1.21.x
 - Updated Java version to 21
 - Added config.yml for persistent ordinals
+- Added option to duplicate banners with more than 5 layers when crafting
 
 # MoreLoomLayers  
 

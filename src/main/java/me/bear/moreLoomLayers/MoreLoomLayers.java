@@ -2,6 +2,7 @@ package me.bear.moreLoomLayers;
 
 import lombok.Getter;
 import me.bear.moreLoomLayers.config.PersistentPatternConfig;
+import me.bear.moreLoomLayers.listeners.CraftingListener;
 import me.bear.moreLoomLayers.listeners.LoomListener;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +24,7 @@ public final class MoreLoomLayers extends JavaPlugin {
         new PersistentPatternConfig(this);
 
         getServer().getPluginManager().registerEvents(new LoomListener(this, patternDataKey), this);
+        getServer().getPluginManager().registerEvents(new CraftingListener(), this);
 
         //Objects.requireNonNull(this.getCommand("showbannerlayers")).setExecutor(new BannerLayerViewerCommand());
 
