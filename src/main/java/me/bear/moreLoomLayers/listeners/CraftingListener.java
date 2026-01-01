@@ -64,7 +64,9 @@ public class CraftingListener implements Listener {
 		}
 
 		if(bannerWithPatterns != null && blankBanner != null) {
-			inventory.setResult(bannerWithPatterns.clone());
+			ItemStack give = bannerWithPatterns.clone();
+			give.setAmount(1);
+			inventory.setResult(give);
 		}
 	}
 
@@ -104,6 +106,7 @@ public class CraftingListener implements Listener {
 		}
 		if(bannerWithPatterns == null) return;
 		ItemStack give = bannerWithPatterns.clone();
+		give.setAmount(1);
 
 		// Give the player the copy to the cursor
 		HumanEntity who = event.getWhoClicked();
