@@ -63,7 +63,7 @@ public class CraftingListener implements Listener {
 			}
 		}
 
-		if(bannerWithPatterns != null && blankBanner != null) {
+		if(bannerWithPatterns != null && blankBanner != null && bannerWithPatterns.getType() == blankBanner.getType()) {
 			ItemStack give = bannerWithPatterns.clone();
 			give.setAmount(1);
 			inventory.setResult(give);
