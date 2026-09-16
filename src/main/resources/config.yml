@@ -1,47 +1,18 @@
-patterns:
-  minecraft:base: 0
-  minecraft:border: 1
-  minecraft:bricks: 2
-  minecraft:circle: 3
-  minecraft:creeper: 4
-  minecraft:cross: 5
-  minecraft:curly_border: 6
-  minecraft:diagonal_left: 7
-  minecraft:diagonal_right: 8
-  minecraft:diagonal_up_left: 9
-  minecraft:diagonal_up_right: 10
-  minecraft:flow: 11
-  minecraft:flower: 12
-  minecraft:globe: 13
-  minecraft:gradient: 14
-  minecraft:gradient_up: 15
-  minecraft:guster: 16
-  minecraft:half_horizontal: 17
-  minecraft:half_horizontal_bottom: 18
-  minecraft:half_vertical: 19
-  minecraft:half_vertical_right: 20
-  minecraft:mojang: 21
-  minecraft:piglin: 22
-  minecraft:rhombus: 23
-  minecraft:skull: 24
-  minecraft:small_stripes: 25
-  minecraft:square_bottom_left: 26
-  minecraft:square_bottom_right: 27
-  minecraft:square_top_left: 28
-  minecraft:square_top_right: 29
-  minecraft:straight_cross: 30
-  minecraft:stripe_bottom: 31
-  minecraft:stripe_center: 32
-  minecraft:stripe_downleft: 33
-  minecraft:stripe_downright: 34
-  minecraft:stripe_left: 35
-  minecraft:stripe_middle: 36
-  minecraft:stripe_right: 37
-  minecraft:stripe_top: 38
-  minecraft:triangle_bottom: 39
-  minecraft:triangle_top: 40
-  minecraft:triangles_bottom: 41
-  minecraft:triangles_top: 42
+# MoreLoomLayers configuration
+#
+# names:
+#   Display names used for the extra lore lines that emulate the vanilla banner
+#   tooltip (vanilla itself only renders the first 6 layers). Keys are banner
+#   pattern registry keys; any pattern that is missing here is added on startup
+#   with a name derived from its key, so translating is just a matter of editing
+#   the generated entries.
+#
+# patterns:
+#   No longer written. Older versions stored the extra layers as numeric ordinals
+#   defined here; if such a section still exists it is only used to read banners
+#   that were left inside a loom back then. New data is stored by registry key,
+#   so it survives config edits and Minecraft updates.
+
 names:
   minecraft:base: Base
   minecraft:border: Bordure
@@ -54,7 +25,7 @@ names:
   minecraft:diagonal_right: Per Bend Sinister Inverted
   minecraft:diagonal_up_left: Per Bend Sinister
   minecraft:diagonal_up_right: Per Bend
-  minecraft:flow: minecraft:flow
+  minecraft:flow: Flow
   minecraft:flower: Flower Charge
   minecraft:globe: Globe
   minecraft:gradient: Gradient

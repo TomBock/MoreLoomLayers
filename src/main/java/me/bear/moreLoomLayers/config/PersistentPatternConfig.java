@@ -8,78 +8,99 @@ import org.bukkit.block.banner.PatternType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Manages persistent storage of pattern ordinals for banners in the config.yml.
+ * Display names for banner patterns, plus the lookup table needed to read banners
+ * that were stored by the old ordinal based format.
  */
-public class PersistentPatternConfig {
+public final class PersistentPatternConfig {
 
-	private static JavaPlugin plugin;
-	// Lookup map of pattern ordinals to their corresponding NamespacedKey
-	private static Map<Short, NamespacedKey> patternById = new HashMap<>();
+	private final JavaPlugin plugin;
+	/** Ordinal -> pattern key, only populated from a legacy "patterns" section. */
+	private final Map<Short, NamespacedKey> legacyPatternById = new HashMap<>();
 
 	public PersistentPatternConfig(JavaPlugin plugin) {
-		PersistentPatternConfig.plugin = plugin;
+		this.plugin = plugin;
+		reload();
+	}
 
+	public void reload() {
 		plugin.reloadConfig();
-		updatePatternConfig();
-		buildPatternMap();
+		addMissingNames();
+		buildLegacyOrdinalMap();
 	}
 
 	/**
-	 * Updates the configuration file to ensure all pattern types have an assigned ordinal.
-	 * New pattern types are added with the next available ordinal.
+	 * Makes sure every pattern in the registry has a name entry, so new patterns
+	 * added by Minecraft or a datapack can be translated by editing the config.
 	 */
-	private void updatePatternConfig() {
-		ConfigurationSection section = plugin.getConfig().getConfigurationSection("patterns");
-		AtomicInteger count = new AtomicInteger(section == null ? 0 : section.getKeys(false).size());
+	private void addMissingNames() {
+		Registry<PatternType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN);
+		boolean changed = false;
 
-		Registry<@org.jetbrains.annotations.NotNull PatternType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN);
-
-		registry.keyStream()
-				.sorted(Comparator.comparing(NamespacedKey::asString))
-				.forEach(key -> {
-			String configPath = "patterns." + key.asString();
-			if (!plugin.getConfig().isSet(configPath)) {
-				plugin.getConfig().set(configPath, count.getAndIncrement());
-
-				// also adds the translation entry which must be edited manually later
-				plugin.getConfig().set("names." + key.asString(), key.asString());
+		for (NamespacedKey key : registry.keyStream().sorted().toList()) {
+			String path = "names." + key.asString();
+			if (!plugin.getConfig().isSet(path)) {
+				plugin.getConfig().set(path, prettify(key));
+				changed = true;
 			}
-		});
+		}
 
-		plugin.saveConfig();
+		if (changed) {
+			plugin.saveConfig();
+		}
 	}
 
-	/**
-	 * Builds a map of pattern ordinals to their corresponding PatternType.
-	 */
-	private void buildPatternMap() {
+	private void buildLegacyOrdinalMap() {
+		legacyPatternById.clear();
 		ConfigurationSection section = plugin.getConfig().getConfigurationSection("patterns");
-		assert section != null;
-		section.getKeys(false).forEach(key -> {
-			short ordinal = (short) section.getInt(key);
-			patternById.put(ordinal, NamespacedKey.fromString(key));
-		});
+		if (section == null) {
+			return;
+		}
+
+		for (String key : section.getKeys(false)) {
+			NamespacedKey patternKey = NamespacedKey.fromString(key);
+			if (patternKey == null) {
+				plugin.getLogger().warning("Ignoring malformed pattern key in config: " + key);
+				continue;
+			}
+			legacyPatternById.put((short) section.getInt(key), patternKey);
+		}
 	}
 
-	public static short getOrdinal(PatternType patternType) {
-		NamespacedKey key = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).getKeyOrThrow(patternType);
-		return (short) plugin.getConfig().getInt("patterns." + key, -1);
+	/** Human readable name for the lore lines; falls back to a name derived from the key. */
+	public String getName(PatternType patternType) {
+		NamespacedKey key = RegistryAccess.registryAccess()
+				.getRegistry(RegistryKey.BANNER_PATTERN)
+				.getKeyOrThrow(patternType);
+		return plugin.getConfig().getString("names." + key.asString(), prettify(key));
 	}
 
-	public static PatternType getPatternByOrdinal(short ordinal) {
-		Registry<@org.jetbrains.annotations.NotNull PatternType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN);
-		NamespacedKey key = patternById.get(ordinal);
-		return registry.get(key);
+	/** Resolves an ordinal written by an older version of the plugin, or null. */
+	public PatternType getLegacyPatternByOrdinal(short ordinal) {
+		NamespacedKey key = legacyPatternById.get(ordinal);
+		if (key == null) {
+			return null;
+		}
+		return RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN).get(key);
 	}
 
-	public static String getName(PatternType patternType) {
-		Registry<@org.jetbrains.annotations.NotNull PatternType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.BANNER_PATTERN);
-		return plugin.getConfig().getString("names." + registry.getKeyOrThrow(patternType).asString(), "Unknown");
+	/** "minecraft:half_horizontal_bottom" -> "Half Horizontal Bottom" */
+	private static String prettify(NamespacedKey key) {
+		StringBuilder sb = new StringBuilder();
+		for (String word : key.getKey().split("_")) {
+			if (word.isEmpty()) {
+				continue;
+			}
+			if (!sb.isEmpty()) {
+				sb.append(' ');
+			}
+			sb.append(Character.toUpperCase(word.charAt(0)))
+					.append(word.substring(1).toLowerCase(Locale.ROOT));
+		}
+		return sb.toString();
 	}
 }
