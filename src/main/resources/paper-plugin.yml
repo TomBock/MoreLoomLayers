@@ -5,8 +5,9 @@ api-version: '${apiVersion}'
 # Marks the plugin as safe to load on Folia. All scheduling goes through the
 # entity/region schedulers, which behave identically on plain Paper.
 folia-supported: true
+description: Allows up to 16 pattern layers on banners, applied with a normal loom.
 authors: [ "Bearofbusiness" ]
-commands:
-  showbannerlayers:
-    description: Shows the layers of a banner
-    aliases: [sbl]
+contributors: [ "TomBock" ]
+website: https://github.com/TomBock/MoreLoomLayers
+# NOTE: paper-plugin.yml has no "commands" section - /showbannerlayers is
+# registered through the Brigadier lifecycle API in MoreLoomLayers#onEnable.

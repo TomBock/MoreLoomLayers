@@ -1,65 +1,81 @@
 package me.bear.moreLoomLayers.commands;
 
-
-import java.util.List;
-
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import me.bear.moreLoomLayers.banner.ExtendedPatterns;
+import me.bear.moreLoomLayers.config.PersistentPatternConfig;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public class BannerLayerViewerCommand implements CommandExecutor {
+import java.util.List;
 
-    private JavaPlugin plugin;
-    private final List<Material> bannerTypes = List.of(
-            Material.BLACK_BANNER,
-            Material.BLUE_BANNER,
-            Material.BROWN_BANNER,
-            Material.CYAN_BANNER,
-            Material.GRAY_BANNER,
-            Material.GREEN_BANNER,
-            Material.LIGHT_BLUE_BANNER,
-            Material.LIGHT_GRAY_BANNER,
-            Material.LIME_BANNER,
-            Material.MAGENTA_BANNER,
-            Material.ORANGE_BANNER,
-            Material.PINK_BANNER,
-            Material.PURPLE_BANNER,
-            Material.RED_BANNER,
-            Material.WHITE_BANNER,
-            Material.YELLOW_BANNER
-    );
+/** Shows every layer of the held banner as a separate banner in a preview inventory. */
+public class BannerLayerViewerCommand implements BasicCommand {
 
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
-        if(!(sender instanceof Player player)) return false;
-        player.getInventory().getItemInMainHand();
-        if (bannerTypes.contains(player.getInventory().getItemInMainHand().getType())) {
-            openBannerInv(player, player.getInventory().getItemInMainHand());
-            return false;
-        }
-        return true;
-    }
+	public static final String PERMISSION = "moreloomlayers.showlayers";
 
-    private void openBannerInv(Player p, ItemStack item) {
-        Inventory inv = Bukkit.createInventory(p, 18, Component.text("Banner Layers"));
-        BannerMeta meta = (BannerMeta) item.getItemMeta();
-        for (int i = 0; i < meta.getPatterns().size(); i++) {
-            Pattern pattern = meta.getPatterns().get(i);
-            ItemStack patternItem = new ItemStack(item.getType());
-            BannerMeta patternMeta = (BannerMeta) patternItem.getItemMeta();
-            patternMeta.addPattern(pattern);
-            patternItem.setItemMeta(patternMeta);
-            inv.setItem(i, patternItem);
-        }
-        p.openInventory(inv);
-    }
+	private final ExtendedPatterns patterns;
+	private final PersistentPatternConfig patternConfig;
+
+	public BannerLayerViewerCommand(ExtendedPatterns patterns, PersistentPatternConfig patternConfig) {
+		this.patterns = patterns;
+		this.patternConfig = patternConfig;
+	}
+
+	@Override
+	public void execute(@NotNull CommandSourceStack source, String @NotNull [] args) {
+		if (!(source.getSender() instanceof Player player)) {
+			source.getSender().sendMessage(Component.text("This command can only be used by a player.", NamedTextColor.RED));
+			return;
+		}
+
+		ItemStack held = player.getInventory().getItemInMainHand();
+		if (!ExtendedPatterns.isBanner(held) || !(held.getItemMeta() instanceof BannerMeta meta)) {
+			player.sendMessage(Component.text("Hold a banner in your main hand first.", NamedTextColor.RED));
+			return;
+		}
+
+		List<Pattern> layers = patterns.allPatterns(meta);
+		if (layers.isEmpty()) {
+			player.sendMessage(Component.text("That banner has no layers.", NamedTextColor.RED));
+			return;
+		}
+
+		openLayerView(player, held, layers);
+	}
+
+	@Override
+	public @NotNull String permission() {
+		return PERMISSION;
+	}
+
+	private void openLayerView(Player player, ItemStack banner, List<Pattern> layers) {
+		int size = Math.max(9, ((layers.size() + 8) / 9) * 9);
+		Inventory view = Bukkit.createInventory(player, size, Component.text("Banner Layers"));
+
+		for (int i = 0; i < layers.size(); i++) {
+			Pattern layer = layers.get(i);
+			ItemStack item = new ItemStack(banner.getType());
+			if (!(item.getItemMeta() instanceof BannerMeta itemMeta)) {
+				continue;
+			}
+
+			itemMeta.addPattern(layer);
+			itemMeta.customName(Component.text((i + 1) + ". " + patternConfig.getName(layer.getPattern()))
+					.color(NamedTextColor.WHITE)
+					.decoration(TextDecoration.ITALIC, false));
+			item.setItemMeta(itemMeta);
+			view.setItem(i, item);
+		}
+
+		player.openInventory(view);
+	}
 }
