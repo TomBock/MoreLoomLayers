@@ -30,8 +30,10 @@ credit to https://www.planetminecraft.com/banner/minecraft-banner-454639/ for th
 | Command | Alias | Permission | Default |
 | --- | --- | --- | --- |
 | `/showbannerlayers` | `/sbl` | `moreloomlayers.showlayers` | everyone |
+| `/moreloomlayers version` | `/mll version` | `moreloomlayers.version` | everyone |
 
-Shows every layer of the banner in your main hand as a separate banner.
+Shows every layer of the banner in your main hand as a separate banner, and
+reports the installed plugin build together with the server version.
 
 ## Building
 
