@@ -18,7 +18,7 @@ public final class MoreLoomLayers extends JavaPlugin {
         extendedPatterns = new ExtendedPatterns(this, patternConfig);
 
         getServer().getPluginManager().registerEvents(new LoomListener(this, extendedPatterns), this);
-        getServer().getPluginManager().registerEvents(new CraftingListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftingListener(this, extendedPatterns), this);
 
         //Objects.requireNonNull(this.getCommand("showbannerlayers")).setExecutor(new BannerLayerViewerCommand());
 
