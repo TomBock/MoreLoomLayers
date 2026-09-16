@@ -2,6 +2,9 @@ name: MoreLoomLayers
 version: '${version}'
 main: me.bear.moreLoomLayers.MoreLoomLayers
 api-version: '${apiVersion}'
+# Marks the plugin as safe to load on Folia. All scheduling goes through the
+# entity/region schedulers, which behave identically on plain Paper.
+folia-supported: true
 authors: [ "Bearofbusiness" ]
 commands:
   showbannerlayers:

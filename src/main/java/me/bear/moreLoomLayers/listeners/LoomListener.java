@@ -1,7 +1,6 @@
 package me.bear.moreLoomLayers.listeners;
 
 import me.bear.moreLoomLayers.banner.ExtendedPatterns;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -75,8 +74,11 @@ public class LoomListener implements Listener {
 		}
 	}
 
+	/**
+	 * Runs on the region that owns the player, so this works on Paper and Folia alike.
+	 */
 	private void scheduleHide(HumanEntity who, Inventory loom) {
-		Bukkit.getScheduler().runTaskLater(plugin, () -> {
+		who.getScheduler().runDelayed(plugin, task -> {
 			if (who.getOpenInventory().getTopInventory() != loom) {
 				return; // the view is gone, the close handler already dealt with it
 			}
@@ -84,7 +86,7 @@ public class LoomListener implements Listener {
 			if (banner != null) {
 				patterns.hide(banner);
 			}
-		}, 1L);
+		}, null, 1L);
 	}
 
 	private static boolean isTakingItem(InventoryClickEvent event) {
