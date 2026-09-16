@@ -1,6 +1,5 @@
 package me.bear.moreLoomLayers;
 
-import lombok.Getter;
 import me.bear.moreLoomLayers.config.PersistentPatternConfig;
 import me.bear.moreLoomLayers.listeners.CraftingListener;
 import me.bear.moreLoomLayers.listeners.LoomListener;
@@ -10,9 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MoreLoomLayers extends JavaPlugin {
 
-    @Getter
     private static MoreLoomLayers instance;
-    @Getter
     private NamespacedKey patternDataKey;
 
     @Override
@@ -28,12 +25,20 @@ public final class MoreLoomLayers extends JavaPlugin {
 
         //Objects.requireNonNull(this.getCommand("showbannerlayers")).setExecutor(new BannerLayerViewerCommand());
 
-        getLogger().info("§aMoreLoomLayers enabled. Allowing up to 16 banner patterns!!!");
+        getLogger().info("Â§aMoreLoomLayers enabled. Allowing up to 16 banner patterns!!!");
+    }
+
+    public static MoreLoomLayers getInstance() {
+        return instance;
+    }
+
+    public NamespacedKey getPatternDataKey() {
+        return patternDataKey;
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("§9MoreLoomLayers disabled.");
+        getLogger().info("Â§9MoreLoomLayers disabled.");
     }
 
 }

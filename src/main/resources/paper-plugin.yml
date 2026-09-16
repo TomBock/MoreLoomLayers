@@ -1,7 +1,7 @@
 name: MoreLoomLayers
 version: '${version}'
 main: me.bear.moreLoomLayers.MoreLoomLayers
-api-version: '1.21'
+api-version: '${apiVersion}'
 authors: [ "Bearofbusiness" ]
 commands:
   showbannerlayers:
